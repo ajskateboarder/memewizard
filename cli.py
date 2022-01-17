@@ -1,6 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
-from library import fetchd
+from library import fetchd, predict
 from thefuzz import fuzz as difflib
 from tabulate import tabulate
 from tqdm import tqdm
@@ -21,7 +21,7 @@ class color:
    UNDERLINE = '\033[4m'
    END = '\033[0m'
 
-while True:
+if __name__ == '__main__':
   try:
     m = [a['href'] for a in s.find('tbody').find_all('a', href=True) if a['href'].startswith('/memes/')]
   except AttributeError:
@@ -33,8 +33,8 @@ while True:
 
   if x == '?':
     print('\n'.join(m))
-    continue
-
+    exit(0)
+    
   y = int(input(color.BOLD+color.YELLOW+'How many memes should I fetch? (current amount to fetch is {}) '.format(len(m))+color.END))
 
   memes = []
@@ -51,3 +51,10 @@ while True:
   json = next(item for item in memes if list(item.keys())[0] == val)
 
   print(color.BOLD+color.GREEN+val+'\n'+color.END+tabulate(json[val]))
+  show = input(color.BOLD+color.BLUE+'Would you like to view the trend history for this meme ({}) (Y/n) ? '.format(val)+color.END)
+
+  if show == 'n' or show == 'N':
+    exit(0)
+  else:
+    print(color.BOLD+'Saving trend history to "figure.png"...'+color.END)
+    predict(val)
