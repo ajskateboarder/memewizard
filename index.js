@@ -28,5 +28,7 @@ axios.get('http://localhost:5000/api/v1/memes/popular/stats')
     var x = [...Array(y.length).keys()]
 
     var regression = new PolynomialRegression(x,y,5)
-     console.log([...y.slice(-10),regression.predict(x.length+1)])
+    var predictions = x.slice(-10).map(c => regression.predict(c+1))
+
+    console.log(y.slice(-10), predictions)
 }) 
