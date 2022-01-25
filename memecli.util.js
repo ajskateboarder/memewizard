@@ -5,8 +5,8 @@ const fs = require('fs')
 const rand = (minimum, maximum) => { return Math.floor(Math.random() * (maximum - minimum + 1)) + minimum; }
 const mean = (arr) => { return arr.reduce((p,a) => p+a, 0)/arr.length }
 
-async function fetch_meme() {
-    var res = await axios.get('http://192.168.68.116:5000/api/v1/memes/popular/stats')
+async function fetch_meme(inp) {
+    var res = await axios.get('http://memeengine.servehttp.com:5000/api/v1/memes/popular/stats')
     var d = res.data['response']
     var names = d.map(c => { return c['name'] })
     var object = d.reduce(
@@ -20,9 +20,8 @@ async function fetch_meme() {
 }
 
 async function fetch_popularity() {
-    var res = await axios.get('http://192.168.68.116:5000/api/v1/memes/popular/stats')
+    var res = await axios.get('http://memeengine.servehttp.com:5000/api/v1/memes/popular/stats')
     var d = res.data['response']
-    var names = d.map(c => { return c['name'] })
     var k = {}
     d.forEach(v => { k[v['name']] = mean(v['trend']) })
     
