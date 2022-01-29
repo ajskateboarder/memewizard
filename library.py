@@ -1,92 +1,151 @@
-print( '\x1b[32m\x1b[1m',
-'''
-▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬
-  ███   ███   ███████   ███   ███   ███████          ███████   ██       ██
-  ████ ████   ██        ████ ████   ██               ██        ██       ██
-  ██ ███ ██   ███████   ██ ███ ██   ███████   █████  ██        ██       ██
-  ██ ███ ██   ██        ██ ███ ██   ██               ██        ██       ██
-  ██     ██   ███████   ██     ██   ███████          ███████   ███████  ██
-▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬
-''',
-'\x1b[0m' )
-
-import requests
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+import matplotlib.pyplot as plt
 from bs4 import BeautifulSoup
-from library import fetchd, predict
-from thefuzz import fuzz as difflib
-from tabulate import tabulate
-from tqdm import tqdm
+import pytrends.request
+import pandas as pd
+import numpy as np
+import requests
+import warnings
+import random
 
-class color:
-   PURPLE = '\033[95m'
-   CYAN = '\033[96m'
-   DARKCYAN = '\033[36m'
-   BLUE = '\033[94m'
-   GREEN = '\033[92m'
-   YELLOW = '\033[93m'
-   RED = '\033[91m'
-   BOLD = '\033[1m'
-   UNDERLINE = '\033[4m'
-   END = '\033[0m'
+warnings.filterwarnings('ignore')
 
-def main():
-  r = requests.get('https://knowyourmeme.com/memes/',
+class meme_object:
+    def fetch_memes(page: str) -> list:
+        '''
+        Scrape any memes page on knowyourmemes.com
+        '''
+
+        r = requests.get(
+            'https://knowyourmeme.com/memes/page/{}'
+            .format(page),
+            headers={'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.101 Safari/537.36'}
+        ).text
+        soup = BeautifulSoup(r, 'html.parser')
+
+        # parsing perfection
+        memes = soup.find('tbody', {'class':['entry-grid-body', 'infinite']}).text.split('    ')
+        print(memes)
+
+        for i, s in enumerate(memes):
+            memes[i] = s.strip()
+            if memes[i] == '': del memes[i]
+        for i, s in enumerate(memes): memes[i] = s.strip()
+        for i, s in enumerate(memes):
+            if memes[i] == 'NSFW':
+                del memes[i+1]
+                del memes[i]
+        for i, s in enumerate(memes):
+            if memes[i] == '': del memes[i]
+
+        return memes
+    def fetch_meme_images(meme_list: list) -> list:
+        '''
+        Find relevant images for a list of memes
+        '''
+
+        meme_images = []
+        for meme in meme_list:
+            r = requests.get(
+                'https://www.google.com/search?q={}&rlz=1CAOUAQ_enUS980&source=lnms&tbm=isch&biw=1517&bih=750&dpr=0.9&surl=1&safe=active&ssui=on#imgrc=1QhXmjkgq_MRQM'
+                .format(meme)
+            ).text
+            soup = BeautifulSoup(r, 'html.parser')
+
+            images = soup.find_all('img')
+            meme_images.append(images[random.randrange(1, len(images))]['src'])
+
+        return meme_images
+    def fetch_trend_history(memes: list) -> list:
+        '''
+        Find trend history of image
+        '''
+
+        trend = pytrends.request.TrendReq()
+        trend.build_payload(memes, timeframe='today 5-y', cat='0', geo='US')
+
+        search = trend.interest_over_time()
+        trend.build_payload(memes, timeframe='today 5-y', cat='0', geo='US')
+
+        youtube = trend.interest_over_time()
+
+        df = pd.DataFrame(search)
+        dF = pd.DataFrame(youtube)
+
+        df.reset_index(inplace=True, drop=True)
+        df = df.to_dict()
+        dF.reset_index(inplace=True, drop=True)
+        dF = dF.to_dict()
+
+        meme = []
+        for k in df:
+            submeme = []
+            v = df[k]
+            for e in v:
+                if not isinstance(v[e], (bool, str)):
+                    submeme.append(v[e])
+            meme.append(submeme)
+        while [] in meme:
+            meme.remove([])
+        meme2 = []
+        for k in df:
+            submeme = []
+            v = df[k]
+            for e in v:
+                if not isinstance(v[e], (bool, str)):
+                    submeme.append(v[e])
+            meme2.append(submeme)
+        while [] in meme:
+            meme2.remove([])
+
+        return meme, meme2
+
+SENTENCE = ['This submission is currently being researched and evaluated.',
+            'You can help confirm this entry by contributing facts, media, and other evidence of notability and mutation.']
+
+def chunkify(l, n):
+    for i in range(0, len(l), n):
+        yield l[i:i + n]
+
+def fetchd(endp):
+  r = requests.get('https://knowyourmeme.com{}'.format(endp),
   headers={'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.101 Safari/537.36'})
   s = BeautifulSoup(r.text, 'html.parser')
+  title = s.find('title').text.split(' |')[0]
 
   try:
-    m = s.find('tbody', {'class':['entry-grid-body', 'infinite']}).text.split('    ')
-
-    for i, s in enumerate(m):
-        m[i] = s.strip()
-        if m[i] == '': del m[i]
-    for i, s in enumerate(m): m[i] = s.strip()
-    for i, s in enumerate(m):
-        if 'NSFW' in m[i] or m[i] == 'NSFW':
-            del m[i+1]
-            del m[i]
-    while '' in m:
-      m.remove('')
-    for i, s in enumerate(m):
-        if 'Updated' in m[i]: del m[i]
+    st = s.find('div', {'class': ['details']}).text.split('\n\n')
   except AttributeError:
-    print(color.RED+'Uh oh! This script failed! You may be banned from knowyourmemes.com.'+color.END)
-    open('error.log','w').write(r.text)
-    exit(0)
-  m = list(set(m))
-  l = ['/memes/'+e.lower().replace(' ', '-') for e in m]
-  x = input(color.BOLD+color.BLUE+'Enter a meme (Enter ? for memes) > '+color.END)
+    st = ['']
+  while '' in st:
+    st.remove('')
+  st = [_st.replace(':', '').replace('\n', '') for _st in st]
+  st = list(chunkify(st, 2))
 
-  if x == '?':
-    print('▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n'+'\n'.join([h.strip() for h in m]), '\n▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬')
-    main()
+  if SENTENCE in st:
+    st.remove(SENTENCE)
+  return {title: st}
 
-  y = int(input(color.BOLD+color.YELLOW+'How many memes should I fetch? (current amount to fetch is {}) '.format(len(m))+color.END))
+def predict(meme):
+  obje = meme_object
+  memes = obje.fetch_trend_history([meme])[0][0]
+  data = [[i, m] for i,m in enumerate(memes)]
 
-  memes = []
-  for en in tqdm(l[:y]):
-      memes.append(fetchd(en))
-  print(memes)
+  y_data = np.array(data)[:,1]
 
-  keys = [list(d.keys())[0] for d in memes[:10]]
-  resp = {}
+  X = np.array(range(len(y_data))).reshape(-1,1)
 
-  for t in keys:
-      ratio = difflib.token_set_ratio(x, t)
-      resp[str(ratio)] = t
+  X_train,X_test,y_train,y_test=train_test_split(X,y_data,test_size=0.25,random_state=0)
 
-  val = resp[str(max([int(k) for k in resp.keys()]))]
-  json = next(item for item in memes if list(item.keys())[0] == val)
+  logreg = LogisticRegression(solver='lbfgs', max_iter=1000)
+  logreg.fit(X_train,y_train)
+  y_pred=logreg.predict(X_test)
 
-  print(color.BOLD+color.GREEN+val+'\n'+color.END+tabulate(json[val]))
-  show = input(color.BOLD+color.BLUE+'Would you like to view the trend history for this meme ({}) (Y/n) ? '.format(val)+color.END)
+  y = [*y_train, *y_test, *y_pred]
 
-  if show == 'n' or show == 'N':
-    exit(0)
-  else:
-    print(color.BOLD+'Saving trend history to "figure.png"...'+color.END)
-    predict(val)
-    exit(0)
+  plt.plot(range(len(y)),y,c='black')
+  plt.axvline(len(y)-len(y_pred), c='blue', alpha=0.2)
+  plt.title('History for \'{}\''.format(meme))
 
-if __name__ == '__main__':
-  main()
+  plt.savefig('figure.png')
