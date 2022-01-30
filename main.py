@@ -115,7 +115,7 @@ def make_pie():
 
   open('document.html', 'w').write(doc.replace('/*data*/', data).replace('/*colors*/', colors))
   Html2Image(custom_flags=['--virtual-time-budget=5000', '--default-background-color=0']).screenshot(html_file='document.html', save_as='chart.png', size=(600,600))
-  show = input(color.BOLD+color.BLUE+'Would you like to keep the document.html used by the program? [Y/n]'+color.END)
+  show = input(color.BOLD+color.BLUE+'Would you like to keep the document.html used by the program? [Y/n] '+color.END)
 
   if show == 'n' or show == 'N':
     os.remove('document.html')
