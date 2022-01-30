@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 import pytrends.request
 import pandas as pd
 import numpy as np
+import statistics
 import requests
 import warnings
 import random
@@ -25,21 +26,22 @@ class meme_object:
         soup = BeautifulSoup(r, 'html.parser')
 
         # parsing perfection
-        memes = soup.find('tbody', {'class':['entry-grid-body', 'infinite']}).text.split('    ')
-        print(memes)
+        m = soup.find('tbody', {'class':['entry-grid-body', 'infinite']}).text.split('    ')
 
-        for i, s in enumerate(memes):
-            memes[i] = s.strip()
-            if memes[i] == '': del memes[i]
-        for i, s in enumerate(memes): memes[i] = s.strip()
-        for i, s in enumerate(memes):
-            if memes[i] == 'NSFW':
-                del memes[i+1]
-                del memes[i]
-        for i, s in enumerate(memes):
-            if memes[i] == '': del memes[i]
+        for i, s in enumerate(m):
+            m[i] = s.strip()
+            if m[i] == '': del m[i]
+        for i, s in enumerate(m): m[i] = s.strip()
+        for i, s in enumerate(m):
+            if 'NSFW' in m[i] or m[i] == 'NSFW':
+                del m[i+1]
+                del m[i]
+        while '' in m:
+            m.remove('')
+        for i, s in enumerate(m):
+            if 'Updated' in m[i]: del m[i]
 
-        return memes
+        return m
     def fetch_meme_images(meme_list: list) -> list:
         '''
         Find relevant images for a list of memes
@@ -98,7 +100,7 @@ class meme_object:
             meme2.append(submeme)
         while [] in meme:
             meme2.remove([])
-
+        
         return meme, meme2
 
 SENTENCE = ['This submission is currently being researched and evaluated.',
@@ -128,8 +130,7 @@ def fetchd(endp):
   return {title: st}
 
 def predict(meme):
-  obje = meme_object
-  memes = obje.fetch_trend_history([meme])[0][0]
+  memes = meme_object.fetch_trend_history([meme])[0][0]
   data = [[i, m] for i,m in enumerate(memes)]
 
   y_data = np.array(data)[:,1]
@@ -149,3 +150,16 @@ def predict(meme):
   plt.title('History for \'{}\''.format(meme))
 
   plt.savefig('figure.png')
+
+def makepie(page):
+    obj = meme_object
+    stuff = [*obj.fetch_memes('1'), *obj.fetch_memes('2'), *obj.fetch_memes('3')]
+
+    trends = {}
+    for sn in stuff:
+        s, v = obj.fetch_trend_history([sn])
+        try:
+            trends[sn]=statistics.mean(s[0])
+        except IndexError:
+            pass
+    return trends
