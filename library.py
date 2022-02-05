@@ -9,8 +9,18 @@ import statistics
 import requests
 import warnings
 import random
+import json
+import re
 
 warnings.filterwarnings('ignore')
+stopwords = ['Why Is', 'Why Does', 'Everyone', 'EVERYONE', 'Why', 'Is The', 'How', 'What Are', 'What\'s Up', 'With', '?', '.', 'Are You', 'FINISHED']
+trails = ("classic", "everywhere")
+funnywords = ['d*ck','Rule 34','Sex']
+regex = re.compile('|'.join(map(re.escape, stopwords)))
+
+def subjectify(text):
+    _list = re.split(r'{}'.format('|'.join(trails)), ''.join(text), flags=re.IGNORECASE)
+    return ''.join(_list)
 
 class meme_object:
     def fetch_memes(page: str) -> list:
@@ -103,15 +113,59 @@ class meme_object:
         
         return meme, meme2
 
-SENTENCE = ['This submission is currently being researched and evaluated.',
-            'You can help confirm this entry by contributing facts, media, and other evidence of notability and mutation.']
+class meme_object_yt:
+    def fetch_memes() -> list:
+        '''Fetches memes from LessonsInMemeCulture on YouTube and does a ton of parsing magic.'''
+        r = requests.get('https://www.youtube.com/c/LessonsinMemeCulture/videos')
+        big_response = json.loads(r.text.split('var ytInitialData =')[1].split(';</script>')[0])
+        filtere = big_response['contents']['twoColumnBrowseResultsRenderer']['tabs'][1]['tabRenderer']['content']['sectionListRenderer']['contents'][0]['itemSectionRenderer']['contents'][0]['gridRenderer']['items']
+        res = []
+        for i in range(len(filtere)):
+            try:
+                string = filtere[i]['gridVideoRenderer']['title']['runs'][0]['text'].replace('“', '"').replace('”', '"')
+                token = regex.sub('', string)
+                words = re.findall('"([^"]*)"', string)
+                if len(words) > 0:
+                    meme = ''.join([s.split('_')[0] for s in words[0]])
+                    res.append(meme)
+                else:
+                    res.append(subjectify(token))
+            except KeyError:
+                break
+
+        return res
+
+    def fetch_meme_dates() -> list:
+        '''Fetch "meme" dates from LessonsInMemeCulture'''
+
+        r = requests.get('https://www.youtube.com/c/LessonsinMemeCulture/videos')
+        big_response = json.loads(r.text.split('var ytInitialData =')[1].split(';</script>')[0])
+        filtere = big_response['contents']['twoColumnBrowseResultsRenderer']['tabs'][1]['tabRenderer']['content']['sectionListRenderer']['contents'][0]['itemSectionRenderer']['contents'][0]['gridRenderer']['items']
+        
+        memes = []
+        dates = []
+
+        for i in range(len(filtere)):
+            try:
+                if not '*' in str(filtere[i]['gridVideoRenderer']['title']['runs'][0]['text']):
+                    memes.append(filtere[i]['gridVideoRenderer']['title']['runs'][0]['text'])
+                    dates.append(filtere[i]['gridVideoRenderer']['publishedTimeText']['simpleText'])
+            except KeyError:
+                break
+        return memes,dates
+
+class invalids:
+  RESEARCH = ['This submission is currently being researched and evaluated.',
+              'You can help confirm this entry by contributing facts, media, and other evidence of notability and mutation.']
+  NOTFOUND = 'Page Not Found (404) - Know Your Meme'
+  GALLERY = 'Trending Videos Gallery'
 
 def chunkify(l, n):
     for i in range(0, len(l), n):
         yield l[i:i + n]
 
-def fetchd(endp):
-  r = requests.get('https://knowyourmeme.com{}'.format(endp),
+def fetchd(url):
+  r = requests.get(url,
   headers={'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.101 Safari/537.36'})
   s = BeautifulSoup(r.text, 'html.parser')
   title = s.find('title').text.split(' |')[0]
@@ -124,9 +178,10 @@ def fetchd(endp):
     st.remove('')
   st = [_st.replace(':', '').replace('\n', '') for _st in st]
   st = list(chunkify(st, 2))
+  st.insert(0, ['Name', title])
 
-  if SENTENCE in st:
-    st.remove(SENTENCE)
+  if invalids.RESEARCH in st:
+    st.remove(invalids.RESEARCH)
   return {title: st}
 
 def predict(meme):

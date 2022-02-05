@@ -10,7 +10,6 @@ print( '\x1b[32m\x1b[1m',
 ''',
 '\x1b[0m' )
 
-from library import fetchd, meme_object, predict
 from thefuzz import fuzz as difflib
 from html2image import Html2Image
 from bs4 import BeautifulSoup
@@ -18,10 +17,16 @@ from tabulate import tabulate
 from tqdm import tqdm
 import PyInquirer
 import statistics
+import webbrowser
 import requests
+import library
 import random
 import json
+import sys
 import os
+
+funnywords = ['d*ck','Rule 34','Sex']
+
 
 class color:
    PURPLE = '\033[95m'
@@ -31,6 +36,7 @@ class color:
    GREEN = '\033[92m'
    YELLOW = '\033[93m'
    RED = '\033[91m'
+   GREY = '\033[90m'
    BOLD = '\033[1m'
    UNDERLINE = '\033[4m'
    END = '\033[0m'
@@ -64,14 +70,14 @@ def predict_meme():
   x = input(color.BOLD+color.BLUE+'Enter a meme (Enter ? for memes) > '+color.END)
 
   if x == '?':
-    print('▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n'+'\n'.join([h.strip() for h in m]), '\n▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬')
+    print('▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n'+'\n'.join([color.BOLD+h.strip()+color.END for h in m]), '\n▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬')
     predict_meme()
 
   y = int(input(color.BOLD+color.YELLOW+'How many memes should I fetch? (current amount to fetch is {}) '.format(len(m))+color.END))
 
   memes = []
   for en in tqdm(l[:y]):
-      memes.append(fetchd(en))
+      memes.append(library.fetchd('https://knowyourmeme.com/memes'+en))
   print(memes)
 
   keys = [list(d.keys())[0] for d in memes[:10]]
@@ -91,7 +97,7 @@ def predict_meme():
     exit(0)
   else:
     print(color.BOLD+'Saving trend history to "figure.png"...'+color.END)
-    predict(val)
+    library.predict(val)
     exit(0)
 
 def make_pie():
@@ -101,11 +107,11 @@ def make_pie():
       return [rgb_to_hex((random.randrange(200,255),random.randrange(200,255),random.randrange(200,255))) for _ in range(amount)]
 
   doc = requests.get('https://raw.githubusercontent.com/ajskateboarder/stuff/main/meme.js/pie.html').text
-  page = meme_object.fetch_memes('1')
+  page = library.meme_object.fetch_memes('1')
 
   resp = {}
   for sn in page:
-        s, v = meme_object.fetch_trend_history([sn])
+        s, v = library.meme_object.fetch_trend_history([sn])
         try:
             resp[sn]=statistics.mean(s[0])
         except IndexError:
@@ -140,6 +146,55 @@ if __name__ == '__main__':
   if prompt['choice'] == 'Create a meme popularity pie chart':
     make_pie()
   elif prompt['choice'] == 'Fetch information for a single meme':
-    predict_meme()
+    prompt_ = PyInquirer.prompt([
+      {
+          'type':'list',
+          'name':'choice',
+          'message':'Where do you want to fetch memes?',
+          'choices':[
+              'KnowYourMeme',
+              'YouTube (recommended)'
+          ]
+      }
+    ])
+
+    if prompt_['choice'] == 'YouTube (recommended)':
+      memesyt, historyyt = library.meme_object_yt.fetch_meme_dates()
+      memesyt = [meme.strip() for meme in memesyt if not any(x in meme.strip() for x in funnywords)]
+
+      print('▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n'+'\n'.join(['{}. {}{}{}  {}{}{}'.format(i, color.BOLD,a,color.END,color.GREY,b,color.END) for i, (a,b) in enumerate(zip(memesyt, historyyt))])+'\n▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬')
+      while True:
+        x = input(color.BOLD+color.BLUE+'Select a meme by its number (add ? after number for meme images) > '+color.END)
+        try:
+          if x.endswith('?') and x.count('?') == 1:
+            try:
+              x = int(x.replace('?', ''))
+              webbrowser.open('https://duckduckgo.com/?q={}'.format(memesyt[x]))
+            except ValueError:
+              print(color.RED+'Not a number. Please use a real number that is in range.'+color.END)
+          else:
+              doc = requests.get('https://www.google.com/search?q={}&surl=1&safe=active&ssui=on'.format(str(memesyt[int(x)]+'know your meme').replace(' ', '+')))
+              soup = BeautifulSoup(doc.text, 'html.parser')
+
+              search = [link['href'] for link in soup.find_all('a', href=True) if 'knowyourmeme.com' in link['href']][0]
+
+              data = library.fetchd(search.split('url?q=')[1].split('&sa')[0].replace('25',''))
+              key = list(data.keys())[0]
+              if library.invalids.NOTFOUND in key or library.invalids.GALLERY in key:
+                print(color.RED+'What!? That meme does not exist in the KnowYourMeme database.'+color.END)
+              else:
+                print(color.BOLD+'Most related meme'+color.END+'\n'+tabulate(data[key]))
+                y = input(color.BOLD+color.BLUE+'Would you like to view the Google Search trend history for this meme ({}) [Y/n] ? '.format(key)+color.END)
+                if y == 'n' or y == 'N':
+                  pass
+                else:
+                  print(color.BOLD+'Saving trend history to "figure.png"...'+color.END,end='',flush=True)
+                  library.predict(key)
+                  print('\r'+color.BOLD+'Saving trend history to "figure.png"...'+color.END+' Finished\n',end='',flush=True)
+                  exit(0)
+        except ValueError:
+          print(color.RED+'Not a number. Please use a real number that is in range.'+color.END)
+    elif prompt_['choice'] == 'KnowYourMeme':
+      predict_meme()
   else:
     exit(0)
