@@ -17,7 +17,6 @@ import os
 
 funnywords = ['d*ck','Rule 34','Sex']
 
-
 class color:
    PURPLE = '\033[95m'
    CYAN = '\033[96m'
