@@ -1,8 +1,8 @@
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
-from pytrends.request import TrendReq as UTrendReq
 import matplotlib.pyplot as plt
 from bs4 import BeautifulSoup
+import pytrends.request
 import pandas as pd
 import numpy as np
 import statistics
@@ -12,34 +12,18 @@ import random
 import json
 import re
 
-headers = {
-    'authority': 'trends.google.com',
-    'cache-control': 'max-age=0',
-    'sec-ch-ua': '" Not A;Brand";v="99", "Chromium";v="96", "Google Chrome";v="96"',
-    'sec-ch-ua-mobile': '?0',
-    'sec-ch-ua-platform': '"Linux"',
-    'upgrade-insecure-requests': '1',
-    'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36',
-    'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-    'x-client-data': 'CIy2yQEIprbJAQipncoBCNT5ygEI6/LLAQif+csBCOaEzAEIy4nMAQjTj8wBCJmQzAEInZHMAQ==',
-    'sec-fetch-site': 'same-origin',
-    'sec-fetch-mode': 'navigate',
-    'sec-fetch-user': '?1',
-    'sec-fetch-dest': 'document',
-    'referer': 'https://trends.google.com/trends/?geo=US',
-    'accept-language': 'en-US,en;q=0.9',
-    'cookie': '__utma=10102256.749338736.1643927518.1644687090.1644761529.3; __utmc=10102256; __utmz=10102256.1644761529.3.2.utmcsr=google|utmccn=(organic)|utmcmd=organic|utmctr=(not%20provided); __utmt=1; __utmb=10102256.11.9.1644761625921; SID=GgjPdMu4L6IlFUCmmEQAxAUloL1sGDpBRyMP7XpaKWTnOwRne3I0mcdVPBn3l72evi6nCQ.; __Secure-1PSID=GgjPdMu4L6IlFUCmmEQAxAUloL1sGDpBRyMP7XpaKWTnOwRn3ew1xWC7wWRAeQ4G7X7aqg.; __Secure-3PSID=GgjPdMu4L6IlFUCmmEQAxAUloL1sGDpBRyMP7XpaKWTnOwRnjh72t40P-VPU7i1z6SCGtg.; HSID=A2t8uymoosCaCpneP; SSID=ASwoNBdOnMshI8AUd; APISID=A1sSy7xe2cwo4ZSb/AL7GLTTK2EpBbgRzT; SAPISID=p-Ehz1pFU7EJn5WB/AH-auG1NNxg6ITYjQ; __Secure-1PAPISID=p-Ehz1pFU7EJn5WB/AH-auG1NNxg6ITYjQ; __Secure-3PAPISID=p-Ehz1pFU7EJn5WB/AH-auG1NNxg6ITYjQ; SEARCH_SAMESITE=CgQIzpQB; OGPC=19022519-1:; 1P_JAR=2022-02-13-14; NID=511=CKJn1vvn6aE1OKvMLG6WlLir23qfmHo5j4zkdjW5Hiu88UyLKFSM-V4FnMC6uzyfnabNLJQbzD57qDvGBmaGT1w1w3VHaHW3NW8OKbCv8esnw1RUnWjQAPbHJrBJkzmw2Y0L632c_xW5CdTvDx6x-mNUBxi0gc4DdDpfZsEEUo_pbZuIzQvHOg14DF3MBnbLnuhGstZtigPsUBd29q6yMMHEeKUugktSkkaeKJAOLTod1hCR5YrVy1qVEmxGhevfQvOkPBYo7PxleoE; SIDCC=AJi4QfFkAXjP9hIIsEtGtr5Oue2mE4MjQaSseyvkbSMymsI_iWzgK237Qoso50dk8uU_ww4VSg; __Secure-3PSIDCC=AJi4QfGajfVnAMdn_0-7y02j-5Lk4Nk7XXpf5d1LHWnIGXtQ9Hj4Qe52VF5Fo3o-tt4wEXo4Bw',
-}
-
-
-class TrendReq(UTrendReq):
-    def _get_data(self, url, method='get', trim_chars=0, **kwargs):
-        return super()._get_data(url, method='get', trim_chars=trim_chars, headers=headers, **kwargs)
-
 warnings.filterwarnings('ignore')
 stopwords = ['Why Is', 'Why Does', 'Everyone', 'EVERYONE', 'Why', 'Is The', 'How', 'What Are', 'What\'s Up', 'With', '?', '.', 'Are You', 'FINISHED']
 trails = ("classic", "everywhere")
-funnywords = ['d*ck','Rule 34','Sex']
+# funnywords = \
+#     requests.get('https://raw.githubusercontent.com/snguyenthanh/better_profanity/master/better_profanity/profanity_wordlist.txt') \
+#         .text.split('\n')
+def funnywords() -> 'list[str]':
+    words = requests.get('https://raw.githubusercontent.com/snguyenthanh/better_profanity/master/better_profanity/profanity_wordlist.txt') \
+        .text.split('\n')
+    while '' in words: words.remove('')
+    return words
+
 regex = re.compile('|'.join(map(re.escape, stopwords)))
 
 def subjectify(text):
@@ -98,8 +82,8 @@ class meme_object:
         Find trend history of image
         '''
 
-        trend = TrendReq()
-        trend.build_payload(memes, timeframe='today 1-m', cat='0', geo='US')
+        trend = pytrends.request.TrendReq()
+        trend.build_payload(memes, timeframe='today 5-y', cat='0', geo='US')
 
         search = trend.interest_over_time()
         trend.build_payload(memes, timeframe='today 5-y', cat='0', geo='US')
