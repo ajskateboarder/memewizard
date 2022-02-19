@@ -1,3 +1,8 @@
+'''
+The general functions which almost all relate to data.
+Read more about what these functions do
+'''
+
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 import matplotlib.pyplot as plt
@@ -5,19 +10,17 @@ from bs4 import BeautifulSoup
 import pytrends.request
 import pandas as pd
 import numpy as np
-import statistics
 import requests
 import warnings
 import random
 import json
 import re
 
+from memewizard.helpers import *
+
 warnings.filterwarnings('ignore')
 stopwords = ['Why Is', 'Why Does', 'Everyone', 'EVERYONE', 'Why', 'Is The', 'How', 'What Are', 'What\'s Up', 'With', '?', '.', 'Are You', 'FINISHED']
-trails = ("classic", "everywhere")
-# funnywords = \
-#     requests.get('https://raw.githubusercontent.com/snguyenthanh/better_profanity/master/better_profanity/profanity_wordlist.txt') \
-#         .text.split('\n')
+
 def funnywords() -> 'list[str]':
     words = requests.get('https://raw.githubusercontent.com/snguyenthanh/better_profanity/master/better_profanity/profanity_wordlist.txt') \
         .text.split('\n')
@@ -25,16 +28,12 @@ def funnywords() -> 'list[str]':
     return words
 
 regex = re.compile('|'.join(map(re.escape, stopwords)))
-
-def subjectify(text):
-    _list = re.split(r'{}'.format('|'.join(trails)), ''.join(text), flags=re.IGNORECASE)
-    return ''.join(_list)
+nsfw_regex = re.compile('|'.join(funnywords())+'|rule 34|b*tches|d*ck', re.IGNORECASE)
 
 class meme_object:
+    '''The meme_object class to handle KnowYourMeme data'''
     def fetch_memes(page: str) -> list:
-        '''
-        Scrape any memes page on knowyourmemes.com
-        '''
+        '''Scrape any memes page on knowyourmemes.com'''
 
         r = requests.get(
             'https://knowyourmeme.com/memes/page/{}'
@@ -59,12 +58,29 @@ class meme_object:
         for i, s in enumerate(m):
             if 'Updated' in m[i]: del m[i]
 
-        return m
-    def fetch_meme_images(meme_list: list) -> list:
-        '''
-        Find relevant images for a list of memes
-        '''
+        return [i.strip() for i in m if not nsfw_regex.search(i)]
+    def fetch_meme_info(url: str) -> dict:
+        '''Fetch more information on a meme with a given URL.'''
+        r = requests.get(url,
+        headers={'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.101 Safari/537.36'})
+        s = BeautifulSoup(r.text, 'html.parser')
+        title = s.find('title').text.split(' |')[0]
 
+        try:
+            st = s.find('div', {'class': ['details']}).text.split('\n\n')
+        except AttributeError:
+            st = ['']
+        while '' in st:
+            st.remove('')
+        st = [_st.replace(':', '').replace('\n', '') for _st in st]
+        st = list(chunkify(st, 2))
+        st.insert(0, ['Name', title])
+
+        if invalids.RESEARCH in st:
+            st.remove(invalids.RESEARCH)
+        return {title: st}
+    def fetch_meme_images(meme_list: list) -> list:
+        '''Find relevant images for a list of memes.'''
         meme_images = []
         for meme in meme_list:
             r = requests.get(
@@ -78,25 +94,16 @@ class meme_object:
 
         return meme_images
     def fetch_trend_history(memes: list) -> list:
-        '''
-        Find trend history of image
-        '''
-
+        '''Fetch trend history of a given list of memes. The list of memes should contain less than 6 items.'''
         trend = pytrends.request.TrendReq()
-        trend.build_payload(memes, timeframe='today 5-y', cat='0', geo='US')
+        trend.build_payload(memes, timeframe='today 1-m', cat='0', geo='US')
 
         search = trend.interest_over_time()
-        trend.build_payload(memes, timeframe='today 5-y', cat='0', geo='US')
-
-        youtube = trend.interest_over_time()
 
         df = pd.DataFrame(search)
-        dF = pd.DataFrame(youtube)
-
         df.reset_index(inplace=True, drop=True)
         df = df.to_dict()
-        dF.reset_index(inplace=True, drop=True)
-        dF = dF.to_dict()
+
 
         meme = []
         for k in df:
@@ -108,20 +115,11 @@ class meme_object:
             meme.append(submeme)
         while [] in meme:
             meme.remove([])
-        meme2 = []
-        for k in df:
-            submeme = []
-            v = df[k]
-            for e in v:
-                if not isinstance(v[e], (bool, str)):
-                    submeme.append(v[e])
-            meme2.append(submeme)
-        while [] in meme:
-            meme2.remove([])
 
-        return meme, meme2
+        return meme
 
 class meme_object_yt:
+    '''The meme_object class to handle data from YouTube'''
     def fetch_memes() -> list:
         '''Fetches memes from LessonsInMemeCulture on YouTube and does a ton of parsing magic.'''
         r = requests.get('https://www.youtube.com/c/LessonsinMemeCulture/videos')
@@ -145,7 +143,6 @@ class meme_object_yt:
 
     def fetch_meme_dates() -> list:
         '''Fetch "meme" dates from LessonsInMemeCulture'''
-
         r = requests.get('https://www.youtube.com/c/LessonsinMemeCulture/videos')
         big_response = json.loads(r.text.split('var ytInitialData =')[1].split(';</script>')[0])
         filtere = big_response['contents']['twoColumnBrowseResultsRenderer']['tabs'][1]['tabRenderer']['content']['sectionListRenderer']['contents'][0]['itemSectionRenderer']['contents'][0]['gridRenderer']['items']
@@ -166,32 +163,9 @@ class invalids:
   NOTFOUND = 'Page Not Found (404) - Know Your Meme'
   GALLERY = 'Trending Videos Gallery'
 
-def chunkify(l, n):
-    for i in range(0, len(l), n):
-        yield l[i:i + n]
-
-def fetchd(url):
-  r = requests.get(url,
-  headers={'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.101 Safari/537.36'})
-  s = BeautifulSoup(r.text, 'html.parser')
-  title = s.find('title').text.split(' |')[0]
-
-  try:
-    st = s.find('div', {'class': ['details']}).text.split('\n\n')
-  except AttributeError:
-    st = ['']
-  while '' in st:
-    st.remove('')
-  st = [_st.replace(':', '').replace('\n', '') for _st in st]
-  st = list(chunkify(st, 2))
-  st.insert(0, ['Name', title])
-
-  if invalids.RESEARCH in st:
-    st.remove(invalids.RESEARCH)
-  return {title: st}
-
-def predict(meme):
-  memes = meme_object.fetch_trend_history([meme])[0][0]
+def predict(meme: str) -> None:
+  '''Predict the popularity of a meme'''
+  memes = meme_object.fetch_trend_history([meme])[0]
   data = [[i, m] for i,m in enumerate(memes)]
 
   y_data = np.array(data)[:,1]
@@ -211,16 +185,3 @@ def predict(meme):
   plt.title('History for \'{}\''.format(meme))
 
   plt.savefig('figure.png')
-
-def makepie(page):
-    print('please wait')
-    obj = meme_object_yt
-
-    trends = {}
-    for sn in obj.fetch_memes():
-        s, v = obj.fetch_trend_history([sn])
-        try:
-            trends[sn]=statistics.mean(s[0])
-        except IndexError:
-            pass
-    return trends

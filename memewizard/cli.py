@@ -1,112 +1,22 @@
 #!/usr/bin/env python3
 
-from thefuzz import fuzz as difflib
-from html2image import Html2Image
+'''The command line functions'''
+
+from memewizard.helpers import *
+from memewizard.visual import *
+import memewizard
+
 from bs4 import BeautifulSoup
 from tabulate import tabulate
-import memewizard as library
-from tqdm import tqdm
+
 import PyInquirer
-import statistics
 import webbrowser
 import traceback
-import requests
-import random
-import json
-import os
-import re
+import tqdm
 
-import webbrowser
-import socketserver
-import http.server
+def predict_meme() -> None:
+  '''Nearly deprecated CLI interface for directing fetching KnowYourMeme data'''
 
-regex = re.compile('|'.join(library.funnywords())+'|rule 34|b*tches|d*ck', re.IGNORECASE)
-
-class color:
-   PURPLE = '\033[95m'
-   CYAN = '\033[96m'
-   DARKCYAN = '\033[36m'
-   BLUE = '\033[94m'
-   GREEN = '\033[92m'
-   YELLOW = '\033[93m'
-   RED = '\033[91m'
-   GREY = '\033[90m'
-   BOLD = '\033[1m'
-   UNDERLINE = '\033[4m'
-   END = '\033[0m'
-
-def rgb_to_hex(rgb):
-  return '#%02x%02x%02x' % rgb
-def colors(amount):
-  return [rgb_to_hex((random.randrange(200,255),random.randrange(200,255),random.randrange(200,255))) for _ in range(amount)]
-
-def make_pie():
-  doc = requests.get('https://raw.githubusercontent.com/ajskateboarder/stuff/main/meme.js/pie.html').text
-  page = library.meme_object_yt.fetch_memes()
-
-  resp = {}
-  for sn in page:
-        s, v = library.meme_object.fetch_trend_history([sn])
-        try:
-            resp[sn]=statistics.mean(s[0])
-        except IndexError:
-            pass
-
-  data, colours = json.dumps(resp).replace('{','').replace('}',''), str(colors(len(resp))).replace('[','').replace(']','')
-
-  open('document.html', 'w').write(doc.replace('/*data*/', data).replace('/*colors*/', colours))
-  Html2Image(custom_flags=['--virtual-time-budget=5000', '--default-background-color=0']).screenshot(html_file='document.html', save_as='chart.png', size=(600,600))
-  show = input(color.BOLD+color.BLUE+'Would you like to keep the document.html used by the program? [Y/n] '+color.END)
-
-  if show == 'n' or show == 'N':
-    os.remove('document.html')
-    exit(0)
-  else:
-    exit(0)
-
-def make_trackback_pie():
-  if not os.path.exists('bin/'):
-    os.mkdir('bin')
-  def pies_():
-    memes = library.meme_object_yt.fetch_memes()
-    resp = []
-    for meme in memes:
-      try:
-        if not any(ele in meme.strip() for ele in library.funnywords()):
-          resp.append([{meme.strip(): round(statistics.mean(s))} for s in list(library.chunkify(library.fetch_trend_history([meme])[0], 3))])
-      except IndexError:
-        pass
-    return resp
-  def pies():
-      p = pies_()
-      resp = []
-      for i in range(len(p)):
-          timeframe = {}
-          for l in p:
-              try:
-                  timeframe[list(l[i].keys())[0]] = list(l[i].values())[0]
-              except IndexError:
-                  pass
-          resp.append(timeframe)
-      return resp
-
-  data = pies()
-  doc = requests.get('https://raw.githubusercontent.com/ajskateboarder/stuff/main/meme.js/pie.html').text
-  colors = str(colors(len(data))).replace('[','').replace(']','')
-
-  os.chdir('bin')
-  for i,datum in enumerate(data):
-      resp = json.dumps(datum).replace('{','').replace('}','')
-      open(f'chart{i}.html', 'w').write(doc.replace('/*data*/', resp).replace('/*colors*/', colors))
-      Html2Image(output_path='images',custom_flags=['--virtual-time-budget=5000', '--default-background-color=0']).screenshot(html_file=f'chart{i}.html', save_as=f'chart{i}.png', size=(600,600))
-
-  open('index.html', 'w').write(requests.get('https://raw.githubusercontent.com/ajskateboarder/stuff/main/meme.js/trackpie.html').text)
-  with socketserver.TCPServer(("", 5000), http.server.SimpleHTTPRequestHandler) as httpd:
-      print('Opening visualization on http://localhost:5000...')
-      webbrowser.open('http://localhost:5000')
-      httpd.serve_forever()
-
-def predict_meme():
   r = requests.get('https://knowyourmeme.com/memes/',
   headers={'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.101 Safari/537.36'})
   s = BeautifulSoup(r.text, 'html.parser')
@@ -142,7 +52,7 @@ def predict_meme():
 
   memes = []
   for en in tqdm(l[:y]):
-      memes.append(library.fetchd('https://knowyourmeme.com/memes'+en))
+      memes.append(memewizard.meme_object.fetch_meme_info('https://knowyourmeme.com/memes'+en))
   print(memes)
 
   keys = [list(d.keys())[0] for d in memes[:10]]
@@ -162,10 +72,12 @@ def predict_meme():
     exit(0)
   else:
     print(color.BOLD+'Saving trend history to "figure.png"...'+color.END)
-    library.predict(val)
+    memewizard.predict(val)
     exit(0)
 
-def main():
+def main() -> None:
+  '''The cool CLI function that you definitely use'''
+
   print( '\x1b[32m\x1b[1m',
   '''
   . * .
@@ -205,8 +117,9 @@ def main():
     ])
     if prompt['choice'] == 'Make a single pie for current information':
       make_pie()
+      exit(0)
     else:
-      make_trackback_pie()
+      make_trackback_pie(serve=True)
   elif prompt['choice'] == 'Fetch information for a single meme':
     prompt_ = PyInquirer.prompt([
       {
@@ -221,8 +134,8 @@ def main():
     ])
 
     if prompt_['choice'] == 'YouTube (recommended)':
-      memesyt, historyyt = library.meme_object_yt.fetch_memes(), library.meme_object_yt.fetch_meme_dates()
-      memesyt = [meme.strip() for meme in memesyt if not regex.search(meme)]
+      memesyt, historyyt = memewizard.meme_object_yt.fetch_memes(), memewizard.meme_object_yt.fetch_meme_dates()
+      memesyt = [meme.strip() for meme in memesyt if not memewizard.nsfw_regex.search(meme)]
 
       print('▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n'+'\n'.join(['{}. {}{}{}  {}{}{}'.format(i, color.BOLD,a,color.END,color.GREY,b,color.END) for i, (a,b) in enumerate(zip(memesyt, historyyt))])+'\n▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬')
       while True:
@@ -240,9 +153,9 @@ def main():
 
               search = [link['href'] for link in soup.find_all('a', href=True) if 'knowyourmeme.com' in link['href']][0]
 
-              data = library.fetchd(search.split('url?q=')[1].split('&sa')[0].replace('25',''))
+              data = memewizard.meme_object.fetch_meme_info(search.split('url?q=')[1].split('&sa')[0].replace('25',''))
               key = list(data.keys())[0]
-              if library.invalids.NOTFOUND in key or library.invalids.GALLERY in key:
+              if memewizard.invalids.NOTFOUND in key or memewizard.invalids.GALLERY in key:
                 print(color.RED+'What!? That meme does not exist in the KnowYourMeme database.'+color.END)
               else:
                 if len(data[key]) < 5:
@@ -254,7 +167,7 @@ def main():
                 else:
                   try:
                     print(color.BOLD+'Saving trend history to "figure.png"...'+color.END,end='',flush=True)
-                    library.predict(key)
+                    memewizard.predict(key)
                     print('\r'+color.BOLD+'Saving trend history to "figure.png"...'+color.END+' Finished\n',end='',flush=True)
                   except Exception as e:
                     print('\n'+color.BOLD+color.RED+'An error has occurred. The stack trace has been logged for further details.\n\n'+traceback.format_exc()+color.END)
