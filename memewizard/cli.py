@@ -88,6 +88,7 @@ def main() -> None:
   | | | | | |  __/ | | | | |  __/\ V  V /| |/ / (_| | | | (_| |
   |_| |_| |_|\___|_| |_| |_|\___| \_/\_/ |_/___\__,_|_|  \__,_|
   ▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬
+  version 0.0.4
   ''',
   '\x1b[0m' )
   prompt = PyInquirer.prompt([
@@ -151,7 +152,7 @@ def main() -> None:
               doc = requests.get('https://www.google.com/search?q={}&surl=1&safe=active&ssui=on'.format(str(memesyt[int(x)]+' know your meme').replace(' ', '+')))
               soup = BeautifulSoup(doc.text, 'html.parser')
 
-              search = [link['href'] for link in soup.find_all('a', href=True) if 'knowyourmeme.com' in link['href']][0]
+              search = [link['href'] for link in soup.find_all('a', href=True) if 'knowyourmeme.com' in link['href'] and link['href'].find('cultures') == -1][0]
 
               data = memewizard.meme_object.fetch_meme_info(search.split('url?q=')[1].split('&sa')[0].replace('25',''))
               key = list(data.keys())[0]
@@ -167,7 +168,7 @@ def main() -> None:
                 else:
                   try:
                     print(color.BOLD+'Saving trend history to "figure.png"...'+color.END,end='',flush=True)
-                    memewizard.predict(key)
+                    predict(key)
                     print('\r'+color.BOLD+'Saving trend history to "figure.png"...'+color.END+' Finished\n',end='',flush=True)
                   except Exception as e:
                     print('\n'+color.BOLD+color.RED+'An error has occurred. The stack trace has been logged for further details.\n\n'+traceback.format_exc()+color.END)
