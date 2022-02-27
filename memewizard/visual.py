@@ -21,7 +21,7 @@ def make_pie():
   print(page)
   resp = {}
   for sn in page:
-        s = memewizard.meme_object.fetch_trend_history([sn])[0]
+        s = memewizard.meme_object.fetch_trend_history([sn])
         try:
             resp[sn]=s[0][-1]
         except IndexError:
