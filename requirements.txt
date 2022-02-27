@@ -1,4 +1,4 @@
-thefuzz[speedup]
+thefuzz
 prompt_toolkit==1.0.14
 tqdm
 requests
