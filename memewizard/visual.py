@@ -18,12 +18,11 @@ import webbrowser
 def make_pie():
   doc = requests.get('https://raw.githubusercontent.com/ajskateboarder/stuff/main/meme.js/pie.html').text
   page = [meme.strip() for meme in memewizard.meme_object_yt.fetch_memes() if not memewizard.nsfw_regex.search(meme)]
-  print(page)
   resp = {}
   for sn in page:
         s = memewizard.meme_object.fetch_trend_history([sn])
         try:
-            resp[sn]=s[0][-1]
+            resp[sn]=statistics.mean(s[0])
         except IndexError:
             pass
 
