@@ -88,7 +88,7 @@ def main() -> None:
   | | | | | |  __/ | | | | |  __/\ V  V /| |/ / (_| | | | (_| |
   |_| |_| |_|\___|_| |_| |_|\___| \_/\_/ |_/___\__,_|_|  \__,_|
   ▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬
-  version 0.0.4.1
+  version 0.0.5
   ''',
   '\x1b[0m' )
   prompt = PyInquirer.prompt([
@@ -168,7 +168,7 @@ def main() -> None:
                 else:
                   try:
                     print(color.BOLD+'Saving trend history to "figure.png"...'+color.END,end='',flush=True)
-                    predict(key)
+                    memewizard.predict(key)
                     print('\r'+color.BOLD+'Saving trend history to "figure.png"...'+color.END+' Finished\n',end='',flush=True)
                   except Exception as e:
                     print('\n'+color.BOLD+color.RED+'An error has occurred. The stack trace has been logged for further details.\n\n'+traceback.format_exc()+color.END)
