@@ -12,7 +12,6 @@ from tabulate import tabulate
 import PyInquirer
 import webbrowser
 import traceback
-import tqdm
 
 def main() -> None:
   '''The cool CLI function that you definitely use'''
@@ -103,3 +102,6 @@ def main() -> None:
           print(color.RED+'Not a number. Please use a real number that is in range.'+color.END)
   else:
     exit(0)
+
+if __name__ == '__main__':
+  main()
