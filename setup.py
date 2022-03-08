@@ -2,6 +2,7 @@ from setuptools import setup, find_packages
 setup(
     name="memewizard",
     version="0.0.5.1",
+    packages=setuptools.find_packages()
     install_requires=[
      'thefuzz',
      'prompt_toolkit==1.0.14',
