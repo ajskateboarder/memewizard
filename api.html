@@ -1,0 +1,511 @@
+<!doctype html>
+<html class="no-js">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="prev" title="Using memewizard" href="usage.html" />
+
+    <meta name="generator" content="sphinx-4.4.0, furo 2022.02.14.1"/>
+        <title>API Reference - memewizard documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=a8f031f701c6af50c9919b48f173a5785af06fac" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=25ceb02ed1c46dc30f2321ff83e92799f69dfdb9" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  body[data-theme="dark"] {
+    --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+  }
+  @media (prefers-color-scheme: dark) {
+    body:not([data-theme="light"]) {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+  }
+</style></head>
+  <body>
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="index.html"><div class="brand">memewizard  documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
+  
+  
+  <span class="sidebar-brand-text">memewizard  documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="search.html" role="search">
+  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html#id1">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Using memewizard</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">API Reference</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <div class="content-icon-container"><div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <div class="section" id="api-reference">
+<span id="api"></span><h1>API Reference<a class="headerlink" href="#api-reference" title="Permalink to this headline">#</a></h1>
+<p>Documentation for the Python functions and classes that power memewizard.
+Whatever functions that do not have comments are not documented.</p>
+<div class="section" id="memewizard-init">
+<h2>memewizard.__init__<a class="headerlink" href="#memewizard-init" title="Permalink to this headline">#</a></h2>
+<p>The general functions which almost all relate to data</p>
+<div class="section" id="meme-object">
+<h3>meme_object<a class="headerlink" href="#meme-object" title="Permalink to this headline">#</a></h3>
+<p>The meme_object class to handle KnowYourMeme data.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">memewizard</span>
+<span class="n">obj</span> <span class="o">=</span> <span class="n">memewizard</span><span class="o">.</span><span class="n">meme_object</span>
+</pre></div>
+</div>
+<div class="section" id="fetch-memes">
+<h4>fetch_memes()<a class="headerlink" href="#fetch-memes" title="Permalink to this headline">#</a></h4>
+<p>Scrape any memes page on knowyourmemes.com</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">fetch_memes</span><span class="p">(</span><span class="n">page</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+</pre></div>
+</div>
+<p><strong>Usage</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># scrape first page</span>
+<span class="n">obj</span><span class="o">.</span><span class="n">fetch_memes</span><span class="p">(</span><span class="s1">'1'</span><span class="p">)</span>
+<span class="sd">'''</span>
+<span class="sd">["You're Telling Me a Shrimp Fried This Rice?",</span>
+<span class="sd">'CalArts',</span>
+<span class="sd">'Bad Sasuke Drawing',</span>
+<span class="sd">'Quirked Up White Boy Goated With The Sauce',</span>
+<span class="sd">'Yankee With No Brim',</span>
+<span class="sd">'Mr. Incredible Becoming Uncanny',</span>
+<span class="sd">'50 DKP Minus / Onyxia Wipe',</span>
+<span class="sd">'Ike Quotes', ':3 / Cat Face',</span>
+<span class="sd">'Winrar',</span>
+<span class="sd">'Tobey Maguire Face',</span>
+<span class="sd">'Let Me Show You My Pokemans']</span>
+<span class="sd">'''</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="fetch-meme-info">
+<h4>fetch_meme_info()<a class="headerlink" href="#fetch-meme-info" title="Permalink to this headline">#</a></h4>
+<p>Fetch more information on a meme with a given URL.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">fetch_meme_info</span><span class="p">(</span><span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+</pre></div>
+</div>
+<p><strong>Usage</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># scrape info about Peepo</span>
+<span class="n">obj</span><span class="o">.</span><span class="n">fetch_meme_info</span><span class="p">(</span><span class="s1">'https://knowyourmeme.com/memes/peepo'</span><span class="p">)</span>
+<span class="sd">'''</span>
+<span class="sd">{'Peepo':</span>
+<span class="sd">[['Name', 'Peepo'],</span>
+<span class="sd">['Status', 'confirmed'],</span>
+<span class="sd">['Origin', 'Twitch'],</span>
+<span class="sd">['Year', '2017'],</span>
+<span class="sd">['Type', 'Emoticon']]}</span>
+<span class="sd">'''</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="fetch-meme-images">
+<h4>fetch_meme_images()<a class="headerlink" href="#fetch-meme-images" title="Permalink to this headline">#</a></h4>
+<p>Find relevant images for a list of memes.
+(This isn’t used at all in memewizard, by the way.)</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">fetch_meme_images</span><span class="p">(</span><span class="n">meme_list</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+</pre></div>
+</div>
+<p><strong>Usage</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># fetch images for every meme on the first page of knowyourmemes</span>
+<span class="n">obj</span><span class="o">.</span><span class="n">fetch_meme_images</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">fetch_memes</span><span class="p">(</span><span class="s1">'1'</span><span class="p">))</span>
+<span class="sd">'''</span>
+<span class="sd">['https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTxHmSUFBO-c13yTQokiQ_y0EeuwnyVrYMdqRUihyMX2u7uzwFldL02ujfZuhs:https://i.ytimg.com/vi/u6P5d9gWXZM/maxresdefault.jpg&amp;s',</span>
+<span class="sd">'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRcVxrz0Wl9BTpkm6LSjG0ZFmAq8_7XrGl2L4CMg1xDFw_kBqWkH2iT-bre3X8:https://www.cartoonbrew.com/wp-content/uploads/2019/03/calartsprotest.jpg&amp;s',</span>
+<span class="sd">'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRM-xj_pVvF-KKWIPzf1QT286CdqymsyN6VLFajR6Pz1BtlToYnzSDVOTNOPyI:https://i.pinimg.com/originals/7d/f0/d2/7df0d2cc01efd64a652203531df92f26.jpg&amp;s',</span>
+<span class="sd">'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSB9SEV9Kcszu1_1fxGGBIXpu0nNgUy2x38t9Y4nw8j4Ntw4LGp2SyeIMB5EJA:https://img.ifunny.co/images/a2ee64c90700f93bc4a0f6dbfd90d4d8dd8ab81fbe09de11251eea2849229150_1.jpg&amp;s',</span>
+<span class="sd">'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQoYKZsx-qZxTo4EUJDFSvw6-7Y_WzvXXo4e96pM9Z5z92OZChHMlokISKrwNU:https://images.complex.com/images/fl_lossy,q_auto,w_910,dpr_auto/ysvsw4qv6mjhsa8tidf8/new-era-yankees-hat&amp;s',</span>
+<span class="sd">'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSsZ1F4h7OKdD3YKkcdtvBmY-iv_3cLCkUtR4vfhufe_iMDH9Qwg08-v0nOhg:https://i.ytimg.com/vi/45aQi9vsaBM/hqdefault.jpg&amp;s',</span>
+<span class="sd">'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRPtMDjLBoCmndpodlh-sXkitaA1fXSPreNXmWrsN-KlSm1TUEBKEJvErMZlvM:https://pics.me.me/thumb_comment-section-on-every-nsfw-post-gif-on-imgur-54242997.png&amp;s',</span>
+<span class="sd">'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTwhV-7tpbfgfymNCrLCJ9FuRzNHzp3cJj6B27OaIuPcqL7Ze8MLjIa4hcqBqk:https://www.usnews.com/dims4/USNEWS/28fb2e4/2147483647/resize/300x%253E/quality/85/%3Furl%3Dhttps%253A%252F%252Fwww.usnews.com%252Fdbimages%252Fmaster%252F23484%252FHP_110930_Ike_Poster.jpg&amp;s',</span>
+<span class="sd">'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2JwmP-N2OZ92IVs4O6zLp5FfewrJ_KO-iMEucvvRZ8bS86DMJBibLvK8H:https://static.wixstatic.com/media/8fc2cb_063b56b82fae42b28cbe1ee0ccc8e0da~mv2.png/v1/fill/w_5000,h_3921,al_c,usm_0.66_1.00_0.01/8fc2cb_063b56b82fae42b28cbe1ee0ccc8e0da~mv2.png&amp;s',</span>
+<span class="sd">'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhrWGKLBPOLmgvMmUXZKpU6xCMRjwEvlX7ilyMG7gBoHsUu6rYVhoUQLNBeg:https://images.sftcdn.net/images/t_app-cover-m,f_auto/p/b3562592-96bf-11e6-ba7b-00163ec9f5fa/2138966026/winrar-WinRar%25201.png&amp;s',</span>
+<span class="sd">'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ4PC07u_CztpILMGtngawDScVFZURGxNA6uShMwwDIkX3xGC1JQdSM_skeGQY:https://s.yimg.com/uu/api/res/1.2/dBkcufjWEf1ZLHDw6maxdw--~B/aD02NTA7dz0xMjAwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en-US/fatherly_721/ec4eee4fa66b6de1025bfe3a00e99f1a&amp;s',</span>
+<span class="sd">'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTu01GJVK7hQpmo9fKEYk-hBe1AR4ZAexPERxdLG12gY0DKh6k5o6ejlRyjZG8:https://i.imgflip.com/2/19i4bl.jpg&amp;s']</span>
+<span class="sd">'''</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="fetch-trend-history">
+<h4>fetch_trend_history()<a class="headerlink" href="#fetch-trend-history" title="Permalink to this headline">#</a></h4>
+<p>Fetch trend history of a given list of memes. The list of memes should contain less than 6 items.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">fetch_trend_history</span><span class="p">(</span><span class="n">memes</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+</pre></div>
+</div>
+<p><strong>Usage</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">memes</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">fetch_memes</span><span class="p">(</span><span class="s1">'1'</span><span class="p">)[:</span><span class="mi">5</span><span class="p">]</span>
+<span class="sd">'''</span>
+<span class="sd">["You're Telling Me a Shrimp Fried This Rice?",</span>
+<span class="sd">'CalArts',</span>
+<span class="sd">'Bad Sasuke Drawing',</span>
+<span class="sd">'Quirked Up White Boy Goated With The Sauce',</span>
+<span class="sd">'Yankee With No Brim']</span>
+<span class="sd">'''</span>
+<span class="n">obj</span><span class="o">.</span><span class="n">fetch_trend_history</span><span class="p">(</span><span class="n">memes</span><span class="p">)</span>
+<span class="sd">'''</span>
+<span class="sd">[[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],</span>
+<span class="sd">[30, 44, 22, 47, 43, 34, 52, 71, 45, 48, 24, 43, 51, 39, 70, 16, 46, 24, 44, 26, 94, 71, 100, 62, 40, 36, 9, 68, 65],</span>
+<span class="sd">[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],</span>
+<span class="sd">[0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 0, 8, 0, 0, 8, 0, 0, 0, 0],</span>
+<span class="sd">[7, 15, 0, 16, 0, 0, 0, 14, 0, 8, 0, 17, 0, 8, 8, 0, 8, 16, 9, 9, 0, 8, 0, 0, 0, 0, 26, 0, 0]]</span>
+<span class="sd">'''</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="meme-object-yt">
+<h3>meme_object_yt<a class="headerlink" href="#meme-object-yt" title="Permalink to this headline">#</a></h3>
+<p>The meme_object class to handle data from YouTube</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">memewizard</span>
+<span class="n">obj</span> <span class="o">=</span> <span class="n">memewizard</span><span class="o">.</span><span class="n">meme_object</span>
+</pre></div>
+</div>
+<div class="section" id="id1">
+<h4>fetch_memes()<a class="headerlink" href="#id1" title="Permalink to this headline">#</a></h4>
+<p>Fetches memes from LessonsInMemeCulture on YouTube and does a ton of parsing magic.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">fetch_memes</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+</pre></div>
+</div>
+<p><strong>Usage</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span><span class="o">.</span><span class="n">fetch_memes</span><span class="p">()</span>
+<span class="sd">'''</span>
+<span class="sd">['  Love Lean',</span>
+<span class="sd">' Kanye Beefing  Pete Davidson',</span>
+<span class="sd">'Who  Guy Waking Up On Ren And Stimpy',</span>
+<span class="sd">' Pinocchio’s New Voice So Weird',</span>
+<span class="sd">' The Hog Rider So Popular',</span>
+<span class="sd">'L + Ratio',</span>
+<span class="sd">'No, Mr Incredible Memes Are STILL Going',</span>
+<span class="sd">'No B*tches?',</span>
+<span class="sd">' THE SKELETON Appearing ',</span>
+<span class="sd">"Don't Be Shy, Go Ahead And Try",</span>
+<span class="sd">' Big Nate Acting Sus',</span>
+<span class="sd">' Raiden Punching Armstrong So Fascinating',</span>
+<span class="sd">"  Pushin' 🅿️",</span>
+<span class="sd">'Martha Was An Average Dog',</span>
+<span class="sd">'  The Green M&amp;M Outrage',</span>
+<span class="sd">' Cuphead Show Going To Be Huge For Meme Culture',</span>
+<span class="sd">'Look Pim',</span>
+<span class="sd">' Rule 34 Tifa Played In The Italian Senate',</span>
+<span class="sd">' Mr Incredible Meme ',</span>
+<span class="sd">'Like A Bantha',</span>
+<span class="sd">' Doc Ock Floating',</span>
+<span class="sd">' Ned Leeds The CEO Of Sex',</span>
+<span class="sd">'What’s Going On In There?',</span>
+<span class="sd">' Detroit Urban Survival Training Exploded Thanks To Memes',</span>
+<span class="sd">' Jesus Sharing QR Codes',</span>
+<span class="sd">'  Hate Empaths',</span>
+<span class="sd">'SQUID GAMES❗❗',</span>
+<span class="sd">' Cow Tools',</span>
+<span class="sd">' Freddy Telling Gregory To Vent',</span>
+<span class="sd">' Mr Incredible Becoming CANNY']</span>
+<span class="sd">'''</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="fetch-meme-dates">
+<h4>fetch_meme_dates()<a class="headerlink" href="#fetch-meme-dates" title="Permalink to this headline">#</a></h4>
+<p>Fetch "meme" dates from LessonsInMemeCulture</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">fetch_meme_dates</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+</pre></div>
+</div>
+<p><strong>Usage</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># scrape info about Peepo</span>
+<span class="n">obj</span><span class="o">.</span><span class="n">fetch_meme_dates</span><span class="p">()</span>
+<span class="sd">'''</span>
+<span class="sd">['15 hours ago',</span>
+<span class="sd">'3 days ago',</span>
+<span class="sd">'4 days ago',</span>
+<span class="sd">'5 days ago',</span>
+<span class="sd">'7 days ago',</span>
+<span class="sd">'9 days ago',</span>
+<span class="sd">'11 days ago',</span>
+<span class="sd">'2 weeks ago',</span>
+<span class="sd">'2 weeks ago',</span>
+<span class="sd">'2 weeks ago',</span>
+<span class="sd">'2 weeks ago',</span>
+<span class="sd">'3 weeks ago',</span>
+<span class="sd">'3 weeks ago',</span>
+<span class="sd">'3 weeks ago',</span>
+<span class="sd">'3 weeks ago',</span>
+<span class="sd">'3 weeks ago',</span>
+<span class="sd">'4 weeks ago',</span>
+<span class="sd">'4 weeks ago',</span>
+<span class="sd">'1 month ago',</span>
+<span class="sd">'1 month ago',</span>
+<span class="sd">'1 month ago',</span>
+<span class="sd">'1 month ago',</span>
+<span class="sd">'1 month ago',</span>
+<span class="sd">'1 month ago',</span>
+<span class="sd">'1 month ago',</span>
+<span class="sd">'1 month ago',</span>
+<span class="sd">'1 month ago',</span>
+<span class="sd">'1 month ago',</span>
+<span class="sd">'1 month ago']</span>
+<span class="sd">'''</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="predict">
+<h3>predict()<a class="headerlink" href="#predict" title="Permalink to this headline">#</a></h3>
+<p>Predict the popularity of a meme</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="n">meme</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</pre></div>
+</div>
+<p><strong>Usage</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">memewizard</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="s1">'L + Ratio'</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/figure.png" src="_images/figure.png"/>
+</div>
+</div>
+<div class="section" id="memewizard-cli">
+<h2>memewizard.cli<a class="headerlink" href="#memewizard-cli" title="Permalink to this headline">#</a></h2>
+<p>The command line functions</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">memewizard.cli</span>
+</pre></div>
+</div>
+<div class="section" id="main">
+<h3>main()<a class="headerlink" href="#main" title="Permalink to this headline">#</a></h3>
+<p>The cool CLI function that you definitely use</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">main</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</pre></div>
+</div>
+<p><strong>Usage</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ._.</span>
+<span class="n">memewizard</span><span class="o">.</span><span class="n">cli</span><span class="o">.</span><span class="n">main</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          <a class="prev-page" href="usage.html">
+              <svg><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Using memewizard</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2022, themysticsavages
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            <div class="icons">
+              
+            </div>
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            Contents
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">API Reference</a><ul>
+<li><a class="reference internal" href="#memewizard-init">memewizard.__init__</a><ul>
+<li><a class="reference internal" href="#meme-object">meme_object</a><ul>
+<li><a class="reference internal" href="#fetch-memes">fetch_memes()</a></li>
+<li><a class="reference internal" href="#fetch-meme-info">fetch_meme_info()</a></li>
+<li><a class="reference internal" href="#fetch-meme-images">fetch_meme_images()</a></li>
+<li><a class="reference internal" href="#fetch-trend-history">fetch_trend_history()</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#meme-object-yt">meme_object_yt</a><ul>
+<li><a class="reference internal" href="#id1">fetch_memes()</a></li>
+<li><a class="reference internal" href="#fetch-meme-dates">fetch_meme_dates()</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#predict">predict()</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#memewizard-cli">memewizard.cli</a><ul>
+<li><a class="reference internal" href="#main">main()</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/scripts/furo.js"></script>
+    </body>
+</html>
