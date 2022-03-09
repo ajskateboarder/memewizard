@@ -1,5 +1,5 @@
 # memewizard
-Retrieve meme information from the terminal
+One good source for all things memes
 
 <img src="https://ajskateboarder.github.io/memewizard/_images/logo.png" height=200>
 
