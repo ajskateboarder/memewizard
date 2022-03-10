@@ -5,7 +5,7 @@ long_description = open('README.md', encoding='utf-8').read()
 setup(
     name="memewizard",
     author='themysticsavages',
-    description='One good source for all things memes'
+    description='One good source for all things memes',
     license='MIT',
     version="0.0.5.1",
     classifiers=[
@@ -15,7 +15,7 @@ setup(
     ],
     long_description=long_description,      
     long_description_content_type='text/markdown',
-    packages=setuptools.find_packages(),
+    packages=find_packages(),
     install_requires=[
      'thefuzz',
      'prompt_toolkit==1.0.14',
