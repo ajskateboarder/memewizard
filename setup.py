@@ -17,9 +17,7 @@ setup(
     long_description_content_type='text/markdown',
     packages=find_packages(),
     install_requires=[
-     'thefuzz',
      'prompt_toolkit==1.0.14',
-     'tqdm',
      'requests',
      'beautifulsoup4',
      'html2image',

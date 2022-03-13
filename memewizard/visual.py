@@ -1,6 +1,5 @@
 '''Functions that all relate to visualization'''
 
-from thefuzz import fuzz as difflib
 from html2image import Html2Image
 
 import memewizard
@@ -9,7 +8,7 @@ import requests
 import json
 import os
 
-from memewizard.helpers import *
+from memewizard.helpers import (color, colors, chunkify)
 
 import http.server
 import socketserver

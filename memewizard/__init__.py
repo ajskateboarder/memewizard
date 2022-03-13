@@ -1,6 +1,10 @@
 '''
-The general functions which almost all relate to data.
-Read more about what these functions do
+memewizard
+~~~~~~~~~~
+One good source for all things memes
+    >>> from memewizard import meme_object_yt
+    >>> from memewizard.cli import main
+    >>> from memewizard.visual import make_pie
 '''
 
 from sklearn.model_selection import train_test_split
@@ -16,7 +20,7 @@ import random
 import json
 import re
 
-from memewizard.helpers import *
+from memewizard.helpers import (subjectify, chunkify)
 
 warnings.filterwarnings('ignore')
 stopwords = ['Why Is', 'Why Does', 'Everyone', 'EVERYONE', 'Why', 'Is The', 'How', 'What Are', 'What\'s Up', 'With', '?', '.', 'Are You', 'FINISHED']

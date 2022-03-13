@@ -2,9 +2,10 @@
 
 '''The command line functions'''
 
-from memewizard.helpers import *
-from memewizard.visual import *
+from memewizard.helpers import color
+from memewizard.visual import make_pie, make_trackback_pie
 import memewizard
+import requests
 
 from bs4 import BeautifulSoup
 from tabulate import tabulate
