@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 with open('README.md', encoding='utf-8') as fh:
     long_description = fh.read()
 
-if __name__ == "__main__"
+if __name__ == "__main__":
     setup(
         name="memewizard",
         author='themysticsavages',
