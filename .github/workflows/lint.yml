@@ -1,24 +1,25 @@
-name: Codebase format
-
+name: auto-format
 on: [push, pull_request]
-
 jobs:
-  build:
+  format:
+    if: github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: ["3.9"]
-
     steps:
-      - uses: actions/checkout@v3
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
+      - uses: actions/checkout@v1
         with:
-          python-version: ${{ matrix.python-version }}
-      - name: Install dependencies
+          ref: ${{ github.head_ref }}
+      - name: autopep8
+        uses: peter-evans/autopep8@v1
+        with:
+          args: --exit-code --recursive --in-place --aggressive --aggressive .
+      - name: Check for modified files
+        id: git-check
+        run: echo "modified=$(if git diff-index --quiet HEAD --; then echo "false"; else echo "true"; fi)" >> $GITHUB_OUTPUT
+      - name: Push changes
+        if: steps.git-check.outputs.modified == 'true'
         run: |
-          python -m pip install --upgrade pip
-          pip install black
-      - name: Format
-        run: |
-          black memewizard/
+          git config --global user.name 'themysticsavages'
+          git config --global user.email 'themysticsavages@users.noreply.github.com'
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+          git commit -am "Format code"
+          git push
