@@ -1,6 +1,7 @@
 from setuptools import setup, find_packages
 
-long_description = open('README.md', encoding='utf-8').read()
+with open('README.md', encoding='utf-8') as fh:
+    long_description = fh.read()
 
 setup(
     name="memewizard",
