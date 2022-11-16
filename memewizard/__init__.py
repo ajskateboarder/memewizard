@@ -7,20 +7,21 @@ One good source for all things memes
     >>> from memewizard.visual import make_pie
 """
 
-from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LogisticRegression
-import matplotlib.pyplot as plt
-from bs4 import BeautifulSoup
-import pytrends.request
-import pandas as pd
-import numpy as np
-import requests
-import warnings
-import random
 import json
+import random
 import re
+import warnings
 
-from memewizard.helpers import subjectify, chunkify
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import pytrends.request
+import requests
+from bs4 import BeautifulSoup
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
+
+from memewizard.helpers import chunkify, subjectify
 
 warnings.filterwarnings("ignore")
 stopwords = [

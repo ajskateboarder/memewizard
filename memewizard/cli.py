@@ -2,17 +2,17 @@
 
 """The command line functions"""
 
-from memewizard.helpers import color
-from memewizard.visual import make_pie, make_trackback_pie
-import memewizard
-import requests
+import traceback
+import webbrowser
 
+import PyInquirer
+import requests
 from bs4 import BeautifulSoup
 from tabulate import tabulate
 
-import PyInquirer
-import webbrowser
-import traceback
+import memewizard
+from memewizard.helpers import color
+from memewizard.visual import make_pie, make_trackback_pie
 
 
 def main() -> None:

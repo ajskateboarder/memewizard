@@ -1,18 +1,17 @@
 """Functions that all relate to visualization"""
 
+import http.server
+import json
+import os
+import socketserver
+import statistics
+import webbrowser
+
+import requests
 from html2image import Html2Image
 
 import memewizard
-import statistics
-import requests
-import json
-import os
-
-from memewizard.helpers import color, colors, chunkify
-
-import http.server
-import socketserver
-import webbrowser
+from memewizard.helpers import chunkify, color, colors
 
 
 def make_pie():
