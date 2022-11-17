@@ -3,6 +3,11 @@ One good source for all things memes
 
 <img src="https://ajskateboarder.github.io/memewizard/_images/logo.png" height=200>
 
-**Please read the documentation [`here`](https://ajskateboarder.github.io/memewizard/).**
+## Installation/Usage
 
-Apologies if the documentation is outdated. I will try to update it often.
+```bash
+pip install memewizard
+python3 -m memewizard.cli
+```
+
+**For more info, read the documentation [`here`](https://ajskateboarder.github.io/memewizard/).**
