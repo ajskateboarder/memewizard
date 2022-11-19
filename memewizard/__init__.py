@@ -174,7 +174,9 @@ class meme_object_yt:
         for i in range(len(filtere)):
             try:
                 string = (
-                    filtere[i]["richItemRenderer"]["content"]["videoRenderer"]["title"]["runs"][0]["text"]
+                    filtere[i]["richItemRenderer"]["content"]["videoRenderer"]["title"][
+                        "runs"
+                    ][0]["text"]
                     .replace("“", '"')
                     .replace("”", '"')
                 )
@@ -187,7 +189,7 @@ class meme_object_yt:
                     res.append(subjectify(token))
             except KeyError:
                 break
-            
+
         print(res)
         return res
 
@@ -206,9 +208,11 @@ class meme_object_yt:
 
         for i in range(len(filtere)):
             try:
-                    dates.append(
-                        filtere[i]["richItemRenderer"]["content"]["videoRenderer"]["publishedTimeText"]["simpleText"]
-                    )
+                dates.append(
+                    filtere[i]["richItemRenderer"]["content"]["videoRenderer"][
+                        "publishedTimeText"
+                    ]["simpleText"]
+                )
             except KeyError:
                 break
         return dates
