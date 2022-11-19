@@ -9,7 +9,7 @@ if __name__ == "__main__":
         author="themysticsavages",
         description="One good source for all things memes",
         license="MIT",
-        version="0.1",
+        version="0.2",
         classifiers=[
             "Programming Language :: Python :: 3",
             "License :: OSI Approved :: MIT License",
