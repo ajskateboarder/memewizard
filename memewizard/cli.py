@@ -5,9 +5,9 @@
 import traceback
 import webbrowser
 
-from InquirerPy import prompt
 import requests
 from bs4 import BeautifulSoup
+from InquirerPy import prompt
 from tabulate import tabulate
 
 import memewizard
