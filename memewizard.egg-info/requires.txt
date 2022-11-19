@@ -1,0 +1,11 @@
+PyInquirer
+beautifulsoup4
+html2image
+matplotlib
+numpy
+pandas
+prompt_toolkit==1.0.14
+pytrends
+requests
+scikit-learn
+tabulate

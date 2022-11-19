@@ -1,0 +1,13 @@
+LICENSE
+README.md
+setup.cfg
+setup.py
+memewizard/__init__.py
+memewizard/cli.py
+memewizard/helpers.py
+memewizard/visual.py
+memewizard.egg-info/PKG-INFO
+memewizard.egg-info/SOURCES.txt
+memewizard.egg-info/dependency_links.txt
+memewizard.egg-info/requires.txt
+memewizard.egg-info/top_level.txt

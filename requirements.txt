@@ -1,12 +1,12 @@
 thefuzz
-prompt_toolkit==1.0.14
+prompt_toolkit
 tqdm
 requests
 beautifulsoup4
 html2image
 tabulate
-PyInquirer
-sklearn
+inquirerpy
+scikit-learn
 pandas
 numpy
 pytrends

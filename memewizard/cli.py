@@ -5,7 +5,7 @@
 import traceback
 import webbrowser
 
-import PyInquirer
+from InquirerPy import prompt
 import requests
 from bs4 import BeautifulSoup
 from tabulate import tabulate
@@ -33,7 +33,7 @@ def main() -> None:
   """,
         "\x1b[0m",
     )
-    prompt = PyInquirer.prompt(
+    selection = prompt(
         [
             {
                 "type": "list",
@@ -48,8 +48,8 @@ def main() -> None:
         ]
     )
 
-    if prompt["choice"] == "Create a meme popularity pie chart":
-        prompt = PyInquirer.prompt(
+    if selection["choice"] == "Create a meme popularity pie chart":
+        selection = PyInquirer.prompt(
             [
                 {
                     "type": "list",
@@ -62,12 +62,12 @@ def main() -> None:
                 }
             ]
         )
-        if prompt["choice"] == "Make a single pie for current information":
+        if selection["choice"] == "Make a single pie for current information":
             make_pie()
             exit(0)
         else:
             make_trackback_pie(serve=True)
-    elif prompt["choice"] == "Fetch information for a single meme":
+    elif selection["choice"] == "Fetch information for a single meme":
         memesyt, historyyt = (
             memewizard.meme_object_yt.fetch_memes(),
             memewizard.meme_object_yt.fetch_meme_dates(),
