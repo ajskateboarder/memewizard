@@ -190,7 +190,6 @@ class meme_object_yt:
             except KeyError:
                 break
 
-        print(res)
         return res
 
     def fetch_meme_dates() -> list:
@@ -203,7 +202,6 @@ class meme_object_yt:
             "tabRenderer"
         ]["content"]["richGridRenderer"]["contents"]
 
-        print(filtere[0])
         dates = []
 
         for i in range(len(filtere)):
