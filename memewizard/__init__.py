@@ -169,20 +169,12 @@ class meme_object_yt:
         )
         filtere = big_response["contents"]["twoColumnBrowseResultsRenderer"]["tabs"][1][
             "tabRenderer"
-        ]["content"]["sectionListRenderer"]["contents"][0]["itemSectionRenderer"][
-            "contents"
-        ][
-            0
-        ][
-            "gridRenderer"
-        ][
-            "items"
-        ]
+        ]["content"]["richGridRenderer"]["contents"]
         res = []
         for i in range(len(filtere)):
             try:
                 string = (
-                    filtere[i]["gridVideoRenderer"]["title"]["runs"][0]["text"]
+                    filtere[i]["richItemRenderer"]["content"]["videoRenderer"]["title"]["runs"][0]["text"]
                     .replace("“", '"')
                     .replace("”", '"')
                 )
@@ -195,7 +187,8 @@ class meme_object_yt:
                     res.append(subjectify(token))
             except KeyError:
                 break
-
+            
+        print(res)
         return res
 
     def fetch_meme_dates() -> list:
@@ -206,27 +199,15 @@ class meme_object_yt:
         )
         filtere = big_response["contents"]["twoColumnBrowseResultsRenderer"]["tabs"][1][
             "tabRenderer"
-        ]["content"]["sectionListRenderer"]["contents"][0]["itemSectionRenderer"][
-            "contents"
-        ][
-            0
-        ][
-            "gridRenderer"
-        ][
-            "items"
-        ]
+        ]["content"]["richGridRenderer"]["contents"]
 
+        print(filtere[0])
         dates = []
 
         for i in range(len(filtere)):
             try:
-                if not "*" in str(
-                    filtere[i]["gridVideoRenderer"]["title"]["runs"][0]["text"]
-                ):
                     dates.append(
-                        filtere[i]["gridVideoRenderer"]["publishedTimeText"][
-                            "simpleText"
-                        ]
+                        filtere[i]["richItemRenderer"]["content"]["videoRenderer"]["publishedTimeText"]["simpleText"]
                     )
             except KeyError:
                 break

@@ -49,7 +49,7 @@ def main() -> None:
     )
 
     if selection["choice"] == "Create a meme popularity pie chart":
-        selection = PyInquirer.prompt(
+        selection = prompt(
             [
                 {
                     "type": "list",
