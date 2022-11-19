@@ -25,7 +25,7 @@ if __name__ == "__main__":
             "html2image",
             "tabulate",
             "PyInquirer",
-            "sklearn",
+            "scikit-learn",
             "pandas",
             "numpy",
             "pytrends",
