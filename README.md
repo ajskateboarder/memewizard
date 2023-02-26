@@ -1,4 +1,6 @@
 # memewizard
+[![Downloads](https://static.pepy.tech/badge/memewizard/month)](https://pepy.tech/project/memewizard)
+
 One good source for all things memes
 
 <img src="https://ajskateboarder.github.io/memewizard/_images/logo.png" height=200>
